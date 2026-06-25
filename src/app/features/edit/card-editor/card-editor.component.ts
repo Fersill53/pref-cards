@@ -16,6 +16,8 @@ export class CardEditor implements OnInit {
 
   saving = signal(false);
   isEdit = signal(false);
+  showDeleteConfirm = signal(false);
+  deleting = signal(false);
 
   card = signal<PreferenceCard>({
     surgeon_name: '',
@@ -117,6 +119,23 @@ export class CardEditor implements OnInit {
     const result = await this.cardService.upsertCard(this.card());
     this.saving.set(false);
     if (result) this.router.navigate(['/cards']);
+  }
+
+  confirmDelete() {
+    this.showDeleteConfirm.set(true);
+  }
+
+  cancelDelete() {
+    this.showDeleteConfirm.set(false);
+  }
+
+  async deleteCard() {
+    const id = this.card().id;
+    if (!id) return;
+    this.deleting.set(true);
+    await this.cardService.deleteCard(id);
+    this.deleting.set(false);
+    this.router.navigate(['/cards']);
   }
 
   cancel() {

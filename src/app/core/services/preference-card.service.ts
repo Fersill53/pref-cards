@@ -110,4 +110,12 @@ export class PreferenceCardService {
     if (error) return [];
     return data ?? [];
   }
+
+  async deleteCard(id: string): Promise<void> {
+    await this.supabase.client
+      .from('preference_cards')
+      .delete()
+      .eq('id', id);
+    await this.loadCards();
+  }
 }

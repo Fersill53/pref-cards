@@ -14,10 +14,12 @@ export class CardView implements OnInit {
   private router = inject(Router)
   private cardService = inject(PreferenceCardService);
 
-  card = signal<PreferenceCard |  null>(null);
+  card = signal<PreferenceCard | null>(null);
   annotations = signal<Annotation[]>([]);
   loading = signal(true);
   activeSection = signal<string | null>(null);
+  showDeleteConfirm = signal(false);
+  deleting = signal(false);
 
   // Annotation Overlay
   overlayOpen = signal(false);
@@ -70,6 +72,23 @@ export class CardView implements OnInit {
       console.log('Annotations fetched:', result);
       this.annotations.set(result);
     }
+  }
+
+  confirmDelete() {
+    this.showDeleteConfirm.set(true);
+  }
+
+  cancelDelete() {
+    this.showDeleteConfirm.set(false);
+  }
+
+  async deleteCard() {
+    const id = this.card()?.id;
+    if (!id) return;
+    this.deleting.set(true);
+    await this.cardService.deleteCard(id);
+    this.deleting.set(false);
+    this.router.navigate(['/cards']);
   }
 
   goToEdit() {
