@@ -134,20 +134,17 @@ export class PreferenceCardService {
     else if (path === 'prep_solution') updatedCard.prep_solution = annotation.correction;
     else if (path === 'draping') updatedCard.draping = annotation.correction;
     else if (path.startsWith('instruments[')) {
-      const index = parseInt(path.match(/\d+/)![0]);
-      const instruments = [...updatedCard.instruments];
-      instruments[index] = { ...instruments[index], name: annotation.correction };
-      updatedCard.instruments = instruments;
+      updatedCard.instruments = [
+        ...updatedCard.instruments,
+        { name: annotation.correction, quantity: 1, notes: '' }
+      ];
     } else if (path.startsWith('sutures[')) {
-      const index = parseInt(path.match(/\d+/)![0]);
-      const sutures = [...updatedCard.sutures];
-      sutures[index] = { ...sutures[index], type: annotation.correction };
-      updatedCard.sutures = sutures;
+      updatedCard.sutures = [
+        ...updatedCard.sutures,
+        { type: annotation.correction, size: '', use: '' }
+      ];
     } else if (path.startsWith('equipment[')) {
-      const index = parseInt(path.match(/\d+/)![0]);
-      const equipment = [...updatedCard.equipment];
-      equipment[index] = annotation.correction;
-      updatedCard.equipment = equipment;
+      updatedCard.equipment = [...updatedCard.equipment, annotation.correction];
     }
 
     await this.upsertCard(updatedCard);
