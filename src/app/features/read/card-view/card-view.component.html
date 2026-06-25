@@ -1,1 +1,182 @@
-<p>card-view works!</p>
+<div class="min-h-screen bg-gray-950 text-white">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-10 bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between">
+    <button (click)="goBack()" class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-1">
+      ← Back
+    </button>
+    @if (card()) {
+      <button (click)="goToEdit()"
+        class="text-xs text-blue-400 hover:text-blue-300 border border-blue-800 hover:border-blue-600 px-3 py-1.5 rounded-lg transition-colors">
+        Edit
+      </button>
+    }
+  </header>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex items-center justify-center py-20 text-gray-400 text-sm">
+      Loading...
+    </div>
+  }
+
+  @if (!loading() && card()) {
+    <main class="px-4 py-4 max-w-2xl mx-auto">
+
+      <!-- Title block -->
+      <div class="mb-6">
+        <h1 class="text-xl font-bold">{{ card()!.procedure_name }}</h1>
+        <p class="text-gray-400 mt-1">{{ card()!.surgeon_name }}</p>
+        @if (card()!.specialty) {
+          <span class="inline-block mt-2 text-xs bg-gray-800 text-gray-400 px-2 py-0.5 rounded-full">
+            {{ card()!.specialty }}
+          </span>
+        }
+      </div>
+
+      <!-- Setup section -->
+      <div class="mb-2">
+        <button (click)="toggleSection('setup')"
+          class="w-full flex items-center justify-between bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 hover:border-gray-600 transition-colors">
+          <span class="font-medium text-sm">Setup</span>
+          <span class="text-gray-500 text-xs">{{ isSectionOpen('setup') ? '▲' : '▼' }}</span>
+        </button>
+        @if (isSectionOpen('setup')) {
+          <div class="bg-gray-900/50 border border-t-0 border-gray-800 rounded-b-xl px-4 py-4 space-y-3">
+            @if (card()!.positioning) {
+              <div>
+                <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Positioning</p>
+                <p class="text-sm">{{ card()!.positioning }}</p>
+              </div>
+            }
+            @if (card()!.prep_solution) {
+              <div>
+                <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Prep Solution</p>
+                <p class="text-sm">{{ card()!.prep_solution }}</p>
+              </div>
+            }
+            @if (card()!.draping) {
+              <div>
+                <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Draping</p>
+                <p class="text-sm">{{ card()!.draping }}</p>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Instruments section -->
+      <div class="mb-2">
+        <button (click)="toggleSection('instruments')"
+          class="w-full flex items-center justify-between bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 hover:border-gray-600 transition-colors">
+          <span class="font-medium text-sm">Instruments</span>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-gray-500">{{ card()!.instruments.length }}</span>
+            <span class="text-gray-500 text-xs">{{ isSectionOpen('instruments') ? '▲' : '▼' }}</span>
+          </div>
+        </button>
+        @if (isSectionOpen('instruments')) {
+          <div class="bg-gray-900/50 border border-t-0 border-gray-800 rounded-b-xl divide-y divide-gray-800">
+            @for (instrument of card()!.instruments; track $index) {
+              <div class="px-4 py-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-medium">{{ instrument.name }}</span>
+                  <span class="text-xs text-gray-400 bg-gray-800 px-2 py-0.5 rounded-full">x{{ instrument.quantity }}</span>
+                </div>
+                @if (instrument.notes) {
+                  <p class="text-xs text-gray-500 mt-1">{{ instrument.notes }}</p>
+                }
+              </div>
+            }
+            @if (card()!.instruments.length === 0) {
+              <p class="px-4 py-3 text-sm text-gray-500">No instruments listed.</p>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Sutures section -->
+      <div class="mb-2">
+        <button (click)="toggleSection('sutures')"
+          class="w-full flex items-center justify-between bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 hover:border-gray-600 transition-colors">
+          <span class="font-medium text-sm">Sutures</span>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-gray-500">{{ card()!.sutures.length }}</span>
+            <span class="text-gray-500 text-xs">{{ isSectionOpen('sutures') ? '▲' : '▼' }}</span>
+          </div>
+        </button>
+        @if (isSectionOpen('sutures')) {
+          <div class="bg-gray-900/50 border border-t-0 border-gray-800 rounded-b-xl divide-y divide-gray-800">
+            @for (suture of card()!.sutures; track $index) {
+              <div class="px-4 py-3">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm font-medium">{{ suture.type }}</span>
+                  <span class="text-xs text-gray-400 bg-gray-800 px-2 py-0.5 rounded-full">{{ suture.size }}</span>
+                </div>
+                @if (suture.use) {
+                  <p class="text-xs text-gray-500 mt-1">{{ suture.use }}</p>
+                }
+              </div>
+            }
+            @if (card()!.sutures.length === 0) {
+              <p class="px-4 py-3 text-sm text-gray-500">No sutures listed.</p>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Equipment section -->
+      <div class="mb-2">
+        <button (click)="toggleSection('equipment')"
+          class="w-full flex items-center justify-between bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 hover:border-gray-600 transition-colors">
+          <span class="font-medium text-sm">Equipment</span>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-gray-500">{{ card()!.equipment.length }}</span>
+            <span class="text-gray-500 text-xs">{{ isSectionOpen('equipment') ? '▲' : '▼' }}</span>
+          </div>
+        </button>
+        @if (isSectionOpen('equipment')) {
+          <div class="bg-gray-900/50 border border-t-0 border-gray-800 rounded-b-xl divide-y divide-gray-800">
+            @for (item of card()!.equipment; track $index) {
+              <div class="px-4 py-3">
+                <span class="text-sm">{{ item }}</span>
+              </div>
+            }
+            @if (card()!.equipment.length === 0) {
+              <p class="px-4 py-3 text-sm text-gray-500">No equipment listed.</p>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Notes section -->
+      @if (card()!.notes) {
+        <div class="mb-2">
+          <button (click)="toggleSection('notes')"
+            class="w-full flex items-center justify-between bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 hover:border-gray-600 transition-colors">
+            <span class="font-medium text-sm">Notes</span>
+            <span class="text-gray-500 text-xs">{{ isSectionOpen('notes') ? '▲' : '▼' }}</span>
+          </button>
+          @if (isSectionOpen('notes')) {
+            <div class="bg-gray-900/50 border border-t-0 border-gray-800 rounded-b-xl px-4 py-4">
+              <p class="text-sm text-gray-300 whitespace-pre-wrap">{{ card()!.notes }}</p>
+            </div>
+          }
+        </div>
+      }
+
+      <div class="pb-10"></div>
+
+    </main>
+  }
+
+  @if (!loading() && !card()) {
+    <div class="flex flex-col items-center justify-center py-20 text-center px-4">
+      <p class="text-gray-400 text-sm">Card not found.</p>
+      <button (click)="goBack()" class="mt-4 text-blue-400 hover:text-blue-300 text-sm underline">
+        Back to cards
+      </button>
+    </div>
+  }
+
+</div>
