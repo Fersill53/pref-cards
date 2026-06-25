@@ -1,11 +1,12 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PreferenceCardService, PreferenceCard, Annotation } from '../../../core/services/preference-card.service';
+import { AnnotationOverlay } from '../annotation-overlay.component/annotation-overlay.component';
 
 @Component({
   selector: 'app-card-view',
   standalone: true,
-  imports: [],
+  imports: [AnnotationOverlay],
   templateUrl: './card-view.component.html'
 })
 export class CardView implements OnInit {
@@ -17,6 +18,12 @@ export class CardView implements OnInit {
   annotations = signal<Annotation[]>([]);
   loading = signal(true);
   activeSection = signal<string | null>(null);
+
+  // Annotation Overlay
+  overlayOpen = signal(false);
+  overlayFieldPath = signal('');
+  overlayFieldLabel = signal('');
+  activeSelection = signal('');
 
   async ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -42,6 +49,27 @@ export class CardView implements OnInit {
 
   getAnnotationsForField(fieldPath: string) {
     return this.annotations().filter(a => a.field_path === fieldPath);
+  }
+
+  openAnnotation(fieldPath: string, fieldLabel: string) {
+    this.overlayFieldPath.set(fieldPath);
+    this.overlayFieldLabel.set(fieldLabel);
+    this.overlayOpen.set(true);
+  }
+
+  closeOverlay() {
+    this.overlayOpen.set(false);
+  }
+
+  async onAnnotationSaved() {
+    this.overlayOpen.set(false);
+    const id = this.card()?.id;
+    console.log('Card ID:', id);
+    if (id) {
+      const result = await this.cardService.getAnnotations(id);
+      console.log('Annotations fetched:', result);
+      this.annotations.set(result);
+    }
   }
 
   goToEdit() {
