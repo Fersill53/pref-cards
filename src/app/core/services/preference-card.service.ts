@@ -118,4 +118,39 @@ export class PreferenceCardService {
       .eq('id', id);
     await this.loadCards();
   }
+
+  async deleteAnnotation(id: string): Promise<void> {
+    await this.supabase.client
+      .from('annotations')
+      .delete()
+      .eq('id', id);
+  }
+
+  async acceptAnnotation(annotation: Annotation, card: PreferenceCard): Promise<void> {
+    const updatedCard = { ...card };
+    const path = annotation.field_path;
+
+    if (path === 'positioning') updatedCard.positioning = annotation.correction;
+    else if (path === 'prep_solution') updatedCard.prep_solution = annotation.correction;
+    else if (path === 'draping') updatedCard.draping = annotation.correction;
+    else if (path.startsWith('instruments[')) {
+      const index = parseInt(path.match(/\d+/)![0]);
+      const instruments = [...updatedCard.instruments];
+      instruments[index] = { ...instruments[index], name: annotation.correction };
+      updatedCard.instruments = instruments;
+    } else if (path.startsWith('sutures[')) {
+      const index = parseInt(path.match(/\d+/)![0]);
+      const sutures = [...updatedCard.sutures];
+      sutures[index] = { ...sutures[index], type: annotation.correction };
+      updatedCard.sutures = sutures;
+    } else if (path.startsWith('equipment[')) {
+      const index = parseInt(path.match(/\d+/)![0]);
+      const equipment = [...updatedCard.equipment];
+      equipment[index] = annotation.correction;
+      updatedCard.equipment = equipment;
+    }
+
+    await this.upsertCard(updatedCard);
+    await this.deleteAnnotation(annotation.id!);
+  }
 }

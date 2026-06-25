@@ -74,6 +74,25 @@ export class CardView implements OnInit {
     }
   }
 
+  async deleteAnnotation(annotationId: string) {
+    await this.cardService.deleteAnnotation(annotationId);
+    const id = this.card()?.id;
+    if (id) this.annotations.set(await this.cardService.getAnnotations(id));
+  }
+
+  async acceptAnnotation(annotation: Annotation) {
+    const card = this.card();
+    if (!card) return;
+    await this.cardService.acceptAnnotation(annotation, card);
+    const id = card.id!;
+    const [updatedCard, updatedAnnotations] = await Promise.all([
+      this.cardService.getCard(id),
+      this.cardService.getAnnotations(id),
+    ]);
+    this.card.set(updatedCard);
+    this.annotations.set(updatedAnnotations);
+  }
+
   confirmDelete() {
     this.showDeleteConfirm.set(true);
   }
