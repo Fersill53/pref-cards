@@ -77,6 +77,10 @@ export class ProfileComponent {
     }
   }
 
+  async signOut() {
+    await this.authService.signOut();
+  }
+
   goBack() {
     this.router.navigate(['/']);
   }
