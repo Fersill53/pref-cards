@@ -37,6 +37,11 @@ export const routes: Routes = [
       import('./features/edit/card-editor/card-editor.component').then(m => m.CardEditor),
   },
   {
+    path: 'login',
+    loadComponent: () =>
+      import('./features/auth/login.component/login.component').then(m => m.LoginComponent),
+  },
+  {
     path: 'instrument-sets',
     loadComponent: () =>
       import('./features/home/home.component/home.component').then(m => m.HomeComponent),

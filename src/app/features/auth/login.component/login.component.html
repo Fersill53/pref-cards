@@ -1,0 +1,55 @@
+<div class="min-h-screen bg-gray-950 text-white flex items-center justify-center px-4">
+  <div class="w-full max-w-sm">
+
+    <div class="text-center mb-8">
+      <div class="w-14 h-14 bg-blue-900/50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <i class="ti ti-clipboard-list text-3xl text-blue-400" aria-hidden="true"></i>
+      </div>
+      <h1 class="text-2xl font-bold">OR Tech</h1>
+      <p class="text-gray-400 text-sm mt-1">Sign in to access preference cards</p>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm text-gray-300 mb-1">Email</label>
+        <input
+          type="email"
+          [ngModel]="email()"
+          (ngModelChange)="email.set($event)"
+          placeholder="you@example.com"
+          class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
+      </div>
+
+      <div>
+        <label class="block text-sm text-gray-300 mb-1">Password</label>
+        <div class="relative">
+          <input
+            [type]="showPassword() ? 'text' : 'password'"
+            [ngModel]="password()"
+            (ngModelChange)="password.set($event)"
+            placeholder="••••••••"
+            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 pr-10" />
+          <button
+            (click)="showPassword.update(v => !v)"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300">
+            <i [class]="'ti ' + (showPassword() ? 'ti-eye-off' : 'ti-eye')"></i>
+          </button>
+        </div>
+      </div>
+
+      @if (error()) {
+        <div class="bg-red-900/40 border border-red-700 rounded-lg px-3 py-2">
+          <p class="text-sm text-red-300">{{ error() }}</p>
+        </div>
+      }
+
+      <button
+        (click)="signIn()"
+        [disabled]="loading() || !email().trim() || !password().trim()"
+        class="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white font-medium py-2.5 rounded-lg transition-colors">
+        {{ loading() ? 'Signing in...' : 'Sign in' }}
+      </button>
+    </div>
+
+  </div>
+</div>
