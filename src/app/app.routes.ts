@@ -4,6 +4,11 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
+      import('./features/home/home.component/home.component').then(m => m.HomeComponent),
+  },
+  {
+    path: 'specialties',
+    loadComponent: () =>
       import('./features/home/specialty-list/specialty-list.component').then(m => m.SpecialtyList),
   },
   {
@@ -30,5 +35,10 @@ export const routes: Routes = [
     path: 'edit/:id',
     loadComponent: () =>
       import('./features/edit/card-editor/card-editor.component').then(m => m.CardEditor),
+  },
+  {
+    path: 'instrument-sets',
+    loadComponent: () =>
+      import('./features/home/home.component/home.component').then(m => m.HomeComponent),
   },
 ];

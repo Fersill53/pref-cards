@@ -1,8 +1,11 @@
 <div class="min-h-screen bg-gray-950 text-white">
 
-  <header class="bg-gray-900 border-b border-gray-800 px-4 py-4">
-    <h1 class="text-xl font-bold tracking-tight">OR Preference Cards</h1>
-    <p class="text-xs text-gray-400 mt-0.5">Select a specialty</p>
+  <header class="sticky top-0 z-10 bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between">
+    <button (click)="goBack()" class="text-gray-400 hover:text-white text-sm transition-colors">
+      ← Back
+    </button>
+    <h1 class="text-base font-semibold">Specialties</h1>
+    <div class="w-16"></div>
   </header>
 
   <main class="px-4 py-4 max-w-2xl mx-auto">

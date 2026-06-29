@@ -44,4 +44,8 @@ export class SpecialtyList implements OnInit {
       state: { specialtyName: specialty.name }
     });
   }
+
+  goBack() {
+    this.router.navigate(['/']);
+  }
 }
