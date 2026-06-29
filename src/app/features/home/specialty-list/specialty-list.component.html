@@ -10,8 +10,17 @@
       @for (specialty of cardService.specialties(); track specialty.id) {
         <button
           (click)="goToSurgeons(specialty)"
-          class="bg-gray-900 border border-gray-800 rounded-xl p-5 text-left hover:border-blue-600 hover:bg-gray-800 transition-colors active:scale-[0.98]">
-          <p class="font-semibold text-white text-sm">{{ specialty.name }}</p>
+          class="bg-gray-900 border border-gray-800 rounded-xl p-4 text-left hover:border-gray-600 hover:bg-gray-800 transition-colors active:scale-[0.98]">
+          <div
+            class="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
+            [style.background]="getMeta(specialty.name).bg">
+            <i
+              [class]="'ti ' + getMeta(specialty.name).icon + ' text-xl'"
+              [style.color]="getMeta(specialty.name).color"
+              aria-hidden="true">
+            </i>
+          </div>
+          <p class="font-semibold text-white text-sm leading-tight">{{ specialty.name }}</p>
         </button>
       }
     </div>

@@ -16,6 +16,7 @@ export class CardListComponent implements OnInit {
 
   surgeonId = signal('');
   surgeonName = signal('');
+  specialtyId = signal('');
   specialtyName = signal('');
   searchQuery = signal('');
 
@@ -33,6 +34,7 @@ export class CardListComponent implements OnInit {
     this.surgeonId.set(id);
     const nav = history.state;
     this.surgeonName.set(nav?.surgeonName ?? 'Surgeon');
+    this.specialtyId.set(nav?.specialtyId ?? '');
     this.specialtyName.set(nav?.specialtyName ?? '');
     if (id) await this.cardService.loadCardsBySurgeon(id);
   }
@@ -49,6 +51,7 @@ export class CardListComponent implements OnInit {
         state: {
           surgeonId: this.surgeonId(),
           surgeonName: this.surgeonName(),
+          specialtyId: this.specialtyId(),
           specialtyName: this.specialtyName(),
         }
       });
@@ -56,7 +59,9 @@ export class CardListComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/specialty', this.cardService.specialties()[0]?.id, 'surgeons']);
+    this.router.navigate(['/specialty', this.specialtyId(), 'surgeons'], {
+      state: { specialtyName: this.specialtyName() }
+    });
   }
 
   clearSearch() {
