@@ -1,0 +1,184 @@
+<div class="bg-gray-950 text-white">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-10 bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between">
+    <div>
+      <h1 class="text-lg font-semibold tracking-tight">
+        {{ isEdit() ? 'Edit Card' : 'New Card' }}
+      </h1>
+    </div>
+    <div class="flex gap-2">
+      <button (click)="cancel()"
+        class="text-sm text-gray-400 hover:text-white px-4 py-2 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+        Cancel
+      </button>
+      <button (click)="save()" [disabled]="saving()"
+        class="text-sm bg-blue-600 hover:bg-blue-500 disabled:opacity-50 px-4 py-2 rounded-lg transition-colors">
+        {{ saving() ? 'Saving...' : 'Save' }}
+      </button>
+    </div>
+  </header>
+
+  <main class="px-4 py-6 max-w-2xl mx-auto space-y-8">
+
+    <!-- Basic Info -->
+    <section>
+      <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Basic Info</h2>
+      <div class="space-y-3">
+
+        <!-- Surgeon (read-only display) -->
+        <div>
+          <label class="block text-sm text-gray-300 mb-1">Surgeon</label>
+          <div class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-gray-400 text-sm">
+            {{ surgeonName() || 'No surgeon selected' }}
+          </div>
+        </div>
+
+        <!-- Procedure -->
+        <div>
+          <label class="block text-sm text-gray-300 mb-1">Procedure</label>
+          <input type="text" [ngModel]="card().procedure_name"
+            (ngModelChange)="updateField('procedure_name', $event)"
+            placeholder="Laparoscopic Cholecystectomy"
+            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Setup -->
+    <section>
+      <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Setup</h2>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-sm text-gray-300 mb-1">Positioning</label>
+          <input type="text" [ngModel]="card().positioning"
+            (ngModelChange)="updateField('positioning', $event)"
+            placeholder="Supine, arms tucked"
+            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-300 mb-1">Prep Solution</label>
+          <input type="text" [ngModel]="card().prep_solution"
+            (ngModelChange)="updateField('prep_solution', $event)"
+            placeholder="Chlorhexidine"
+            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-300 mb-1">Draping</label>
+          <input type="text" [ngModel]="card().draping"
+            (ngModelChange)="updateField('draping', $event)"
+            placeholder="Standard lap drape"
+            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Instruments -->
+    <section>
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-widest">Instruments</h2>
+        <button (click)="addInstrument()"
+          class="text-xs text-blue-400 hover:text-blue-300 border border-blue-800 hover:border-blue-600 px-3 py-1 rounded-lg transition-colors">
+          + Add
+        </button>
+      </div>
+      <div class="space-y-2">
+        @for (instrument of card().instruments; track $index) {
+          <div class="bg-gray-900 border border-gray-800 rounded-lg p-3 flex gap-2 items-start">
+            <div class="flex-1 space-y-2">
+              <input type="text" [ngModel]="instrument.name"
+                (ngModelChange)="updateInstrument($index, 'name', $event)"
+                placeholder="Instrument name"
+                class="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
+              <div class="flex gap-2">
+                <input type="number" [ngModel]="instrument.quantity"
+                  (ngModelChange)="updateInstrument($index, 'quantity', +$event)"
+                  placeholder="Qty"
+                  class="w-20 bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
+                <input type="text" [ngModel]="instrument.notes"
+                  (ngModelChange)="updateInstrument($index, 'notes', $event)"
+                  placeholder="Notes (optional)"
+                  class="flex-1 bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
+              </div>
+            </div>
+            <button (click)="removeInstrument($index)"
+              class="text-gray-600 hover:text-red-400 text-lg leading-none mt-1 transition-colors">✕</button>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Sutures -->
+    <section>
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-widest">Sutures</h2>
+        <button (click)="addSuture()"
+          class="text-xs text-blue-400 hover:text-blue-300 border border-blue-800 hover:border-blue-600 px-3 py-1 rounded-lg transition-colors">
+          + Add
+        </button>
+      </div>
+      <div class="space-y-2">
+        @for (suture of card().sutures; track $index) {
+          <div class="bg-gray-900 border border-gray-800 rounded-lg p-3 flex gap-2 items-start">
+            <div class="flex-1 space-y-2">
+              <div class="flex gap-2">
+                <input type="text" [ngModel]="suture.type"
+                  (ngModelChange)="updateSuture($index, 'type', $event)"
+                  placeholder="Type (e.g. Vicryl)"
+                  class="flex-1 bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
+                <input type="text" [ngModel]="suture.size"
+                  (ngModelChange)="updateSuture($index, 'size', $event)"
+                  placeholder="Size (e.g. 2-0)"
+                  class="w-24 bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
+              </div>
+              <input type="text" [ngModel]="suture.use"
+                (ngModelChange)="updateSuture($index, 'use', $event)"
+                placeholder="Use (e.g. fascial closure)"
+                class="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
+            </div>
+            <button (click)="removeSuture($index)"
+              class="text-gray-600 hover:text-red-400 text-lg leading-none mt-1 transition-colors">✕</button>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Equipment -->
+    <section>
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-widest">Equipment</h2>
+        <button (click)="addEquipment()"
+          class="text-xs text-blue-400 hover:text-blue-300 border border-blue-800 hover:border-blue-600 px-3 py-1 rounded-lg transition-colors">
+          + Add
+        </button>
+      </div>
+      <div class="space-y-2">
+        @for (item of card().equipment; track $index) {
+          <div class="flex gap-2 items-center">
+            <input type="text" [ngModel]="item"
+              (ngModelChange)="updateEquipment($index, $event)"
+              placeholder="Equipment item"
+              class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
+            <button (click)="removeEquipment($index)"
+              class="text-gray-600 hover:text-red-400 text-lg leading-none transition-colors">✕</button>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Notes -->
+    <section>
+      <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Notes</h2>
+      <textarea [ngModel]="card().notes"
+        (ngModelChange)="updateField('notes', $event)"
+        placeholder="Any additional preferences or quirks..."
+        rows="4"
+        class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 resize-none">
+      </textarea>
+    </section>
+
+    <div class="pb-10"></div>
+
+  </main>
+</div>
