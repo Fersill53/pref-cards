@@ -1,8 +1,16 @@
 <div class="min-h-screen bg-gray-950 text-white">
 
-  <header class="bg-gray-900 border-b border-gray-800 px-4 py-5">
-    <h1 class="text-2xl font-bold tracking-tight">OR Tech</h1>
-    <p class="text-sm text-gray-400 mt-0.5">What do you need?</p>
+  <header class="bg-gray-900 border-b border-gray-800 px-4 py-5 flex items-start justify-between">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight">OR Tech</h1>
+      <p class="text-sm text-gray-400 mt-0.5">What do you need?</p>
+    </div>
+    <button
+      (click)="goToProfile()"
+      class="w-9 h-9 rounded-full bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-colors mt-0.5"
+      title="Profile">
+      <i class="ti ti-user text-gray-400 text-base" aria-hidden="true"></i>
+    </button>
   </header>
 
   <main class="px-4 py-6 max-w-2xl mx-auto space-y-4">

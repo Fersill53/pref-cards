@@ -1,0 +1,82 @@
+<div class="min-h-screen bg-gray-950 text-white">
+
+  <header class="sticky top-0 z-10 bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between">
+    <button (click)="goBack()" class="text-gray-400 hover:text-white text-sm transition-colors">
+      ← Back
+    </button>
+    <h1 class="text-base font-semibold">My Profile</h1>
+    <div class="w-16"></div>
+  </header>
+
+  <main class="px-4 py-6 max-w-md mx-auto space-y-6">
+
+    <!-- Account Info -->
+    <section class="bg-gray-900 border border-gray-800 rounded-2xl p-5 space-y-4">
+      <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wide">Account</h2>
+
+      <div>
+        <p class="text-xs text-gray-500 mb-1">Email</p>
+        <p class="text-sm text-white">{{ email }}</p>
+      </div>
+
+      <div>
+        <p class="text-xs text-gray-500 mb-1">Role</p>
+        <span class="inline-block text-xs px-2 py-0.5 rounded-full font-medium"
+          [class]="role === 'admin' ? 'bg-purple-900/60 text-purple-300' : 'bg-blue-900/60 text-blue-300'">
+          {{ roleLabel }}
+        </span>
+      </div>
+    </section>
+
+    <!-- Change Password -->
+    <section class="bg-gray-900 border border-gray-800 rounded-2xl p-5 space-y-4">
+      <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wide">Change Password</h2>
+
+      <div>
+        <label class="text-xs text-gray-500 block mb-1">Current Password</label>
+        <input
+          type="password"
+          [value]="currentPassword()"
+          (input)="currentPassword.set($any($event.target).value)"
+          placeholder="Enter current password"
+          class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-600" />
+      </div>
+
+      <div>
+        <label class="text-xs text-gray-500 block mb-1">New Password</label>
+        <input
+          type="password"
+          [value]="newPassword()"
+          (input)="newPassword.set($any($event.target).value)"
+          placeholder="At least 6 characters"
+          class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-600" />
+      </div>
+
+      <div>
+        <label class="text-xs text-gray-500 block mb-1">Confirm New Password</label>
+        <input
+          type="password"
+          [value]="confirmPassword()"
+          (input)="confirmPassword.set($any($event.target).value)"
+          placeholder="Repeat new password"
+          class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-600" />
+      </div>
+
+      @if (errorMsg()) {
+        <p class="text-xs text-red-400">{{ errorMsg() }}</p>
+      }
+      @if (successMsg()) {
+        <p class="text-xs text-green-400">{{ successMsg() }}</p>
+      }
+
+      <button
+        (click)="changePassword()"
+        [disabled]="saving() || !currentPassword() || !newPassword() || !confirmPassword()"
+        class="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium py-2.5 rounded-xl transition-colors">
+        {{ saving() ? 'Saving…' : 'Update Password' }}
+      </button>
+    </section>
+
+  </main>
+
+</div>
