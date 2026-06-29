@@ -75,6 +75,7 @@ export class PreferenceCardService {
 
   // Surgeons
   async loadSurgeonsBySpecialty(specialtyId: string) {
+    if (!specialtyId) return;
     this.loading.set(true);
     const { data, error } = await this.supabase.client
       .from('surgeons')
@@ -127,7 +128,7 @@ export class PreferenceCardService {
       .select('*')
       .order('procedure_name');
     this.loading.set(false);
-    if (error) this.error.set(error.message);
+    if (error) { console.error('loadCards error:', error); this.error.set(error.message); }
     else this.cards.set(data ?? []);
   }
 
@@ -147,7 +148,7 @@ export class PreferenceCardService {
       .upsert({ ...card, updated_at: new Date().toISOString() })
       .select()
       .single();
-    if (error) return null;
+    if (error) { console.error('upsertCard error:', error); return null; }
     return data;
   }
 
@@ -156,7 +157,6 @@ export class PreferenceCardService {
       .from('preference_cards')
       .delete()
       .eq('id', id);
-    await this.loadCards();
   }
 
   async addAnnotation(annotation: Omit<Annotation, 'id' | 'created_at'>): Promise<Annotation | null> {

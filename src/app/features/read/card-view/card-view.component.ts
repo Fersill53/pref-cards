@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PreferenceCardService, PreferenceCard, Annotation } from '../../../core/services/preference-card.service';
+import { PreferenceCardService, PreferenceCard, Annotation, Surgeon } from '../../../core/services/preference-card.service';
 import { AnnotationOverlay } from '../annotation-overlay.component/annotation-overlay.component';
 
 @Component({
@@ -15,6 +15,7 @@ export class CardView implements OnInit {
   private cardService = inject(PreferenceCardService);
 
   card = signal<PreferenceCard | null>(null);
+  surgeon = signal<Surgeon | null>(null);
   annotations = signal<Annotation[]>([]);
   loading = signal(true);
   activeSection = signal<string | null>(null);
@@ -38,6 +39,12 @@ export class CardView implements OnInit {
 
     this.card.set(card);
     this.annotations.set(annotations);
+
+    if (card?.surgeon_id) {
+      const surgeon = await this.cardService.getSurgeon(card.surgeon_id);
+      this.surgeon.set(surgeon);
+    }
+
     this.loading.set(false);
   }
 

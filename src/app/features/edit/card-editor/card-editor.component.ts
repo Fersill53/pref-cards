@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { PreferenceCardService, PreferenceCard, InstrumentItem, SutureItem } from '../../../core/services/preference-card.service';
+import { PreferenceCardService, PreferenceCard, InstrumentItem, SutureItem, Surgeon } from '../../../core/services/preference-card.service';
 
 @Component({
   selector: 'app-card-editor',
@@ -12,19 +12,22 @@ import { PreferenceCardService, PreferenceCard, InstrumentItem, SutureItem } fro
 export class CardEditor implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private cardService = inject(PreferenceCardService);
+  protected cardService = inject(PreferenceCardService);
 
   saving = signal(false);
+  deleting = signal(false);
   isEdit = signal(false);
   showDeleteConfirm = signal(false);
-  deleting = signal(false);
+
   surgeonId = signal('');
+  surgeonName = signal('');
+  specialtyId = signal('');
+  specialtyName = signal('');
+  surgeons = signal<Surgeon[]>([]);
 
   card = signal<PreferenceCard>({
     surgeon_id: '',
-    surgeon_name: '',
     procedure_name: '',
-    specialty: '',
     positioning: '',
     prep_solution: '',
     draping: '',
@@ -43,12 +46,25 @@ export class CardEditor implements OnInit {
       const existing = await this.cardService.getCard(id);
       if (existing) {
         this.card.set(existing);
-        this.surgeonId.set(existing.surgeon_id ?? '');
+        this.surgeonId.set(existing.surgeon_id);
+        // Load surgeon info
+        const surgeon = await this.cardService.getSurgeon(existing.surgeon_id);
+        if (surgeon) {
+          this.surgeonName.set(surgeon.name);
+          this.specialtyId.set(surgeon.specialty_id);
+          await this.cardService.loadSurgeonsBySpecialty(surgeon.specialty_id);
+          this.surgeons.set(this.cardService.surgeons());
+        }
       }
     } else {
       if (nav?.surgeonId) {
         this.surgeonId.set(nav.surgeonId);
+        this.surgeonName.set(nav.surgeonName ?? '');
+        this.specialtyId.set(nav.specialtyId ?? '');
+        this.specialtyName.set(nav.specialtyName ?? '');
         this.card.update(c => ({ ...c, surgeon_id: nav.surgeonId }));
+        await this.cardService.loadSurgeonsBySpecialty(nav.specialtyId);
+        this.surgeons.set(this.cardService.surgeons());
       }
     }
   }
@@ -57,7 +73,6 @@ export class CardEditor implements OnInit {
     this.card.update(c => ({ ...c, [field]: value }));
   }
 
-  // Instruments
   addInstrument() {
     this.card.update(c => ({
       ...c,
@@ -80,7 +95,6 @@ export class CardEditor implements OnInit {
     }));
   }
 
-  // Sutures
   addSuture() {
     this.card.update(c => ({
       ...c,
@@ -103,7 +117,6 @@ export class CardEditor implements OnInit {
     }));
   }
 
-  // Equipment
   addEquipment() {
     this.card.update(c => ({
       ...c,
@@ -130,7 +143,11 @@ export class CardEditor implements OnInit {
     this.saving.set(true);
     const result = await this.cardService.upsertCard(this.card());
     this.saving.set(false);
-    if (result) this.router.navigate(['/surgeon', this.surgeonId(), 'cards']);
+    if (result) {
+      this.router.navigate(['/surgeon', this.surgeonId(), 'cards'], {
+        state: { surgeonName: this.surgeonName(), specialtyName: this.specialtyName() }
+      });
+    }
   }
 
   confirmDelete() {
@@ -147,10 +164,14 @@ export class CardEditor implements OnInit {
     this.deleting.set(true);
     await this.cardService.deleteCard(id);
     this.deleting.set(false);
-    this.router.navigate(['/surgeon', this.surgeonId(), 'cards']);
+    this.router.navigate(['/surgeon', this.surgeonId(), 'cards'], {
+      state: { surgeonName: this.surgeonName(), specialtyName: this.specialtyName() }
+    });
   }
 
   cancel() {
-    this.router.navigate(['/surgeon', this.surgeonId(), 'cards']);
+    this.router.navigate(['/surgeon', this.surgeonId(), 'cards'], {
+      state: { surgeonName: this.surgeonName(), specialtyName: this.specialtyName() }
+    });
   }
 }
