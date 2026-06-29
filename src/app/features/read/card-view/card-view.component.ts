@@ -29,7 +29,7 @@ export class CardView implements OnInit {
 
   async ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
-    if (!id) { this.router.navigate(['/cards']); return; }
+    if (!id) { this.router.navigate(['/']); return; }
 
     const [card, annotations] = await Promise.all([
       this.cardService.getCard(id),
@@ -107,7 +107,7 @@ export class CardView implements OnInit {
     this.deleting.set(true);
     await this.cardService.deleteCard(id);
     this.deleting.set(false);
-    this.router.navigate(['/cards']);
+    this.router.navigate(['/']);
   }
 
   goToEdit() {
@@ -115,6 +115,6 @@ export class CardView implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/cards']);
+    this.router.navigate(['/']);
   }
 }

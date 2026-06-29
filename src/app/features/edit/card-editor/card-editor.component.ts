@@ -18,8 +18,10 @@ export class CardEditor implements OnInit {
   isEdit = signal(false);
   showDeleteConfirm = signal(false);
   deleting = signal(false);
+  surgeonId = signal('');
 
   card = signal<PreferenceCard>({
+    surgeon_id: '',
     surgeon_name: '',
     procedure_name: '',
     specialty: '',
@@ -39,9 +41,13 @@ export class CardEditor implements OnInit {
     if (id) {
       this.isEdit.set(true);
       const existing = await this.cardService.getCard(id);
-      if (existing) this.card.set(existing);
+      if (existing) {
+        this.card.set(existing);
+        this.surgeonId.set(existing.surgeon_id ?? '');
+      }
     } else {
       if (nav?.surgeonId) {
+        this.surgeonId.set(nav.surgeonId);
         this.card.update(c => ({ ...c, surgeon_id: nav.surgeonId }));
       }
     }
@@ -124,7 +130,7 @@ export class CardEditor implements OnInit {
     this.saving.set(true);
     const result = await this.cardService.upsertCard(this.card());
     this.saving.set(false);
-    if (result) this.router.navigate(['/cards']);
+    if (result) this.router.navigate(['/surgeon', this.surgeonId(), 'cards']);
   }
 
   confirmDelete() {
@@ -141,10 +147,10 @@ export class CardEditor implements OnInit {
     this.deleting.set(true);
     await this.cardService.deleteCard(id);
     this.deleting.set(false);
-    this.router.navigate(['/cards']);
+    this.router.navigate(['/surgeon', this.surgeonId(), 'cards']);
   }
 
   cancel() {
-    this.router.navigate(['/cards']);
+    this.router.navigate(['/surgeon', this.surgeonId(), 'cards']);
   }
 }

@@ -34,7 +34,7 @@ export class CardListComponent implements OnInit {
     const nav = history.state;
     this.surgeonName.set(nav?.surgeonName ?? 'Surgeon');
     this.specialtyName.set(nav?.specialtyName ?? '');
-    await this.cardService.loadCardsBySurgeon(id);
+    if (id) await this.cardService.loadCardsBySurgeon(id);
   }
 
   goToCard(id: string) {
