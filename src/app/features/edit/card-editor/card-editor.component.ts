@@ -34,10 +34,16 @@ export class CardEditor implements OnInit {
 
   async ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
+    const nav = history.state;
+
     if (id) {
       this.isEdit.set(true);
       const existing = await this.cardService.getCard(id);
       if (existing) this.card.set(existing);
+    } else {
+      if (nav?.surgeonId) {
+        this.card.update(c => ({ ...c, surgeon_id: nav.surgeonId }));
+      }
     }
   }
 

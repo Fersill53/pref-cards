@@ -1,1 +1,20 @@
-<p>specialty-list.component works!</p>
+<div class="min-h-screen bg-gray-950 text-white">
+
+  <header class="bg-gray-900 border-b border-gray-800 px-4 py-4">
+    <h1 class="text-xl font-bold tracking-tight">OR Preference Cards</h1>
+    <p class="text-xs text-gray-400 mt-0.5">Select a specialty</p>
+  </header>
+
+  <main class="px-4 py-4 max-w-2xl mx-auto">
+    <div class="grid grid-cols-2 gap-3">
+      @for (specialty of cardService.specialties(); track specialty.id) {
+        <button
+          (click)="goToSurgeons(specialty)"
+          class="bg-gray-900 border border-gray-800 rounded-xl p-5 text-left hover:border-blue-600 hover:bg-gray-800 transition-colors active:scale-[0.98]">
+          <p class="font-semibold text-white text-sm">{{ specialty.name }}</p>
+        </button>
+      }
+    </div>
+  </main>
+
+</div>
