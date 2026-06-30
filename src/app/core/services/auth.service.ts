@@ -9,24 +9,38 @@ export class AuthService {
 
   user = signal<any>(null);
   userRole = signal<string | null>(null);
+  displayName = signal<string>('');
   loading = signal(true);
 
   async init() {
     const { data: { session } } = await this.supabase.client.auth.getSession();
     this.user.set(session?.user ?? null);
-    if (session?.user) await this.loadRole();
+    if (session?.user) {
+      await this.loadRole();
+      this.displayName.set(session.user.user_metadata?.['full_name'] ?? '');
+    }
     this.loading.set(false);
 
     this.supabase.client.auth.onAuthStateChange(async (event, session) => {
       this.user.set(session?.user ?? null);
       if (session?.user) {
         await this.loadRole();
+        this.displayName.set(session.user.user_metadata?.['full_name'] ?? '');
         this.router.navigate(['/']);
       } else {
         this.userRole.set(null);
+        this.displayName.set('');
         this.router.navigate(['/login']);
       }
     });
+  }
+
+  async updateName(fullName: string): Promise<{ error: any }> {
+    const { data, error } = await this.supabase.client.auth.updateUser({
+      data: { full_name: fullName },
+    });
+    if (!error) this.displayName.set(data.user.user_metadata?.['full_name'] ?? fullName);
+    return { error };
   }
 
   private async loadRole() {

@@ -28,6 +28,35 @@
       </div>
     </section>
 
+    <!-- Name -->
+    <section class="bg-gray-900 border border-gray-800 rounded-2xl p-5 space-y-4">
+      <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wide">Your Name</h2>
+
+      <div>
+        <label class="text-xs text-gray-500 block mb-1">Full Name</label>
+        <input
+          type="text"
+          [value]="fullName()"
+          (input)="fullName.set($any($event.target).value)"
+          placeholder="e.g. Alex Rivera"
+          class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-600" />
+      </div>
+
+      @if (nameErrorMsg()) {
+        <p class="text-xs text-red-400">{{ nameErrorMsg() }}</p>
+      }
+      @if (nameSuccessMsg()) {
+        <p class="text-xs text-green-400">{{ nameSuccessMsg() }}</p>
+      }
+
+      <button
+        (click)="saveName()"
+        [disabled]="savingName() || !fullName().trim()"
+        class="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium py-2.5 rounded-xl transition-colors">
+        {{ savingName() ? 'Saving…' : 'Save Name' }}
+      </button>
+    </section>
+
     <!-- Change Password -->
     <section class="bg-gray-900 border border-gray-800 rounded-2xl p-5 space-y-4">
       <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wide">Change Password</h2>
