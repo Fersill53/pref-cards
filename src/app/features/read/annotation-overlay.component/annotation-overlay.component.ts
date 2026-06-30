@@ -1,6 +1,7 @@
 import { Component, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PreferenceCardService } from '../../../core/services/preference-card.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-annotation-overlay',
@@ -10,6 +11,7 @@ import { PreferenceCardService } from '../../../core/services/preference-card.se
 })
 export class AnnotationOverlay {
   private cardService = inject(PreferenceCardService);
+  private authService = inject(AuthService);
 
   cardId = input.required<string>();
   fieldPath = input.required<string>();
@@ -17,18 +19,21 @@ export class AnnotationOverlay {
   closed = output<void>();
   saved = output<void>();
 
-  authorName = signal('');
   correction = signal('');
   saving = signal(false);
 
+  get authorName() {
+    return this.authService.displayName() || this.authService.user()?.email || 'Unknown';
+  }
+
   async save() {
-    if (!this.correction().trim() || !this.authorName().trim()) return;
+    if (!this.correction().trim()) return;
     this.saving.set(true);
     await this.cardService.addAnnotation({
       card_id: this.cardId(),
       field_path: this.fieldPath(),
       correction: this.correction(),
-      author_name: this.authorName(),
+      author_name: this.authorName,
       is_verified: false,
     });
     this.saving.set(false);

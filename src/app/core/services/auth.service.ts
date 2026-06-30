@@ -44,9 +44,12 @@ export class AuthService {
   }
 
   private async loadRole() {
+    const userId = this.user()?.id;
+    if (!userId) return;
     const { data } = await this.supabase.client
       .from('user_roles')
       .select('user_role')
+      .eq('user_id', userId)
       .single();
     this.userRole.set(data?.user_role ?? 'tech');
   }

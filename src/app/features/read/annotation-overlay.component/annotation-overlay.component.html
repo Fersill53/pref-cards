@@ -9,16 +9,7 @@
   </div>
 
   <p class="text-xs text-gray-400 uppercase tracking-wide">{{ fieldLabel() }}</p>
-
-  <div>
-    <label class="block text-sm text-gray-300 mb-1">Your Name</label>
-    <input
-      type="text"
-      [ngModel]="authorName()"
-      (ngModelChange)="authorName.set($event)"
-      placeholder="e.g. Jamie R."
-      class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
-  </div>
+  <p class="text-xs text-gray-500">Submitting as <span class="text-gray-300">{{ authorName }}</span></p>
 
   <div>
     <label class="block text-sm text-gray-300 mb-1">Correction / Note</label>
@@ -33,7 +24,7 @@
 
   <button
     (click)="save()"
-    [disabled]="saving() || !correction().trim() || !authorName().trim()"
+    [disabled]="saving() || !correction().trim()"
     class="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white font-medium py-2.5 rounded-lg transition-colors">
     {{ saving() ? 'Saving...' : 'Save Note' }}
   </button>
