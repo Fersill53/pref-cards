@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PreferenceCardService } from '../../../core/services/preference-card.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-card-list',
@@ -11,6 +12,7 @@ import { PreferenceCardService } from '../../../core/services/preference-card.se
 })
 export class CardListComponent implements OnInit {
   protected cardService = inject(PreferenceCardService);
+  protected authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 

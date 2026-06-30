@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PreferenceCardService, PreferenceCard, Annotation, Surgeon } from '../../../core/services/preference-card.service';
 import { AnnotationOverlay } from '../annotation-overlay.component/annotation-overlay.component';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-card-view',
@@ -13,6 +14,7 @@ export class CardView implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router)
   private cardService = inject(PreferenceCardService);
+  protected authService = inject(AuthService);
 
   card = signal<PreferenceCard | null>(null);
   surgeon = signal<Surgeon | null>(null);
