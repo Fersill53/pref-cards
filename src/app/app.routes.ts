@@ -51,4 +51,9 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/instrument-sets/specialty-list/instrument-specialty-list.component').then(m => m.InstrumentSpecialtyList),
   },
+  {
+    path: 'instrument-sets/:specialtyId',
+    loadComponent: () =>
+      import('./features/instrument-sets/set-list/instrument-set-list.component').then(m => m.InstrumentSetList),
+  },
 ];
