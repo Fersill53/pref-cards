@@ -17,7 +17,7 @@ export class HomeComponent {
   }
 
   goToInstrumentSets() {
-    // coming soon
+    this.router.navigate(['/instrument-sets']);
   }
 
   goToProfile() {

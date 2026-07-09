@@ -1,0 +1,32 @@
+<div class="bg-gray-950 text-white">
+
+  <header class="sticky top-0 z-10 bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between">
+    <button (click)="goBack()" class="text-gray-400 hover:text-white text-sm transition-colors">
+      ← Back
+    </button>
+    <h1 class="text-base font-semibold">Instrument Sets</h1>
+    <div class="w-16"></div>
+  </header>
+
+  <main class="px-4 py-4 max-w-2xl mx-auto">
+    <div class="grid grid-cols-2 gap-3">
+      @for (specialty of cardService.specialties(); track specialty.id) {
+        <button
+          (click)="goToSets(specialty)"
+          class="bg-gray-900 border border-gray-800 rounded-xl p-4 text-left hover:border-gray-600 hover:bg-gray-800 transition-colors active:scale-[0.98]">
+          <div
+            class="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
+            [style.background]="getMeta(specialty.name).bg">
+            <i
+              [class]="'ti ' + getMeta(specialty.name).icon + ' text-xl'"
+              [style.color]="getMeta(specialty.name).color"
+              aria-hidden="true">
+            </i>
+          </div>
+          <p class="font-semibold text-white text-sm leading-tight">{{ specialty.name }}</p>
+        </button>
+      }
+    </div>
+  </main>
+
+</div>

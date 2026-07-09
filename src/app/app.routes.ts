@@ -49,6 +49,6 @@ export const routes: Routes = [
   {
     path: 'instrument-sets',
     loadComponent: () =>
-      import('./features/home/home.component/home.component').then(m => m.HomeComponent),
+      import('./features/instrument-sets/specialty-list/instrument-specialty-list.component').then(m => m.InstrumentSpecialtyList),
   },
 ];
