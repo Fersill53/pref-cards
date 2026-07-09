@@ -52,6 +52,21 @@ export const routes: Routes = [
       import('./features/instrument-sets/specialty-list/instrument-specialty-list.component').then(m => m.InstrumentSpecialtyList),
   },
   {
+    path: 'instrument-sets/view/:id',
+    loadComponent: () =>
+      import('./features/instrument-sets/set-view/instrument-set-view.component').then(m => m.InstrumentSetView),
+  },
+  {
+    path: 'instrument-sets/edit',
+    loadComponent: () =>
+      import('./features/instrument-sets/set-editor/instrument-set-editor.component').then(m => m.InstrumentSetEditor),
+  },
+  {
+    path: 'instrument-sets/edit/:id',
+    loadComponent: () =>
+      import('./features/instrument-sets/set-editor/instrument-set-editor.component').then(m => m.InstrumentSetEditor),
+  },
+  {
     path: 'instrument-sets/:specialtyId',
     loadComponent: () =>
       import('./features/instrument-sets/set-list/instrument-set-list.component').then(m => m.InstrumentSetList),
