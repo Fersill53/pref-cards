@@ -33,6 +33,7 @@ export class CardEditor implements OnInit {
     draping: '',
     instruments: [],
     sutures: [],
+    supplies: [],
     equipment: [],
     notes: '',
   });
@@ -114,6 +115,25 @@ export class CardEditor implements OnInit {
     this.card.update(c => ({
       ...c,
       sutures: c.sutures.filter((_, i) => i !== index)
+    }));
+  }
+
+  addSupply() {
+    this.card.update(c => ({ ...c, supplies: [...(c.supplies ?? []), ''] }));
+  }
+
+  updateSupply(index: number, value: string) {
+    this.card.update(c => {
+      const supplies = [...(c.supplies ?? [])];
+      supplies[index] = value;
+      return { ...c, supplies };
+    });
+  }
+
+  removeSupply(index: number) {
+    this.card.update(c => ({
+      ...c,
+      supplies: (c.supplies ?? []).filter((_, i) => i !== index)
     }));
   }
 

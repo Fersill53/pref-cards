@@ -37,6 +37,7 @@ export interface PreferenceCard {
   draping?: string;
   instruments: InstrumentItem[];
   sutures: SutureItem[];
+  supplies: string[];
   equipment: string[];
   notes?: string;
   version?: number;
@@ -203,6 +204,11 @@ export class PreferenceCardService {
       const sutures = [...updatedCard.sutures];
       sutures[index] = { ...sutures[index], type: annotation.correction };
       updatedCard.sutures = sutures;
+    } else if (path.startsWith('supplies[')) {
+      const index = parseInt(path.match(/\d+/)![0]);
+      const supplies = [...(updatedCard.supplies ?? [])];
+      supplies[index] = annotation.correction;
+      updatedCard.supplies = supplies;
     } else if (path.startsWith('equipment[')) {
       const index = parseInt(path.match(/\d+/)![0]);
       const equipment = [...updatedCard.equipment];
