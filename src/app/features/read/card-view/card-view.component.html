@@ -123,11 +123,11 @@
         }
       </div>
 
-      <!-- Instruments -->
+      <!-- Instrument Sets -->
       <div class="mb-2">
         <button (click)="toggleSection('instruments')"
           class="w-full flex items-center justify-between bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 hover:border-gray-600 transition-colors">
-          <span class="font-medium text-sm">Instruments</span>
+          <span class="font-medium text-sm">Instrument Sets</span>
           <div class="flex items-center gap-2">
             <span class="text-xs text-gray-500">{{ card()!.instruments.length }}</span>
             <span class="text-gray-500 text-xs">{{ isSectionOpen('instruments') ? '▲' : '▼' }}</span>
@@ -165,7 +165,7 @@
               </div>
             }
             @if (card()!.instruments.length === 0) {
-              <p class="px-4 py-3 text-sm text-gray-500">No instruments listed.</p>
+              <p class="px-4 py-3 text-sm text-gray-500">No instrument sets listed.</p>
             }
           </div>
         }
